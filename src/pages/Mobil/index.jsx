@@ -97,7 +97,7 @@ const data = [
     },
 ];
 
-const Barang = () => {
+const Mobil = () => {
     const currentDate = dayjs().locale("id").format("dddd, D MMMM YYYY");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
@@ -118,7 +118,7 @@ const Barang = () => {
             <Modal
                 title={
                     <span className="text-xl font-semibold text-gray-800">
-                        Detail Barang
+                        Detail Mobil
                     </span>
                 }
                 open={isModalOpen}
@@ -197,7 +197,7 @@ const Barang = () => {
                     <div className="w-full relative">
                         <div className="w-full h-20 border-b-[1px] border-gray-200 bg-[#F9FBFE] flex items-center justify-between px-10 sticky top-0">
                             <h1 className="font-montserrat text-xl">
-                                Data Barang
+                                Data Mobil
                             </h1>
                             <div className="flex items-center justify-center gap-6">
                                 <h1 className="font-montserrat text-gray-400">
@@ -216,15 +216,15 @@ const Barang = () => {
                         <div className="w-full h-full xl:p-6 2xl:p-10">
                             <div className="overflow-x-auto w-full h-full max-w-[85rem] m-auto max-h-[30rem] overflow-scroll relative">
                                 <div className="w-full bg-white flex items-center justify-between rounded-t-2xl p-6 sticky top-0 z-20">
-                                    <h1>Data Barang</h1>
+                                    <h1>Data Mobil</h1>
                                     <button
                                         className="rounded-lg overflow-hidden relative w-52 h-10 cursor-pointer flex items-center border border-blue-500 bg-blue-500 group hover:bg-blue-500 active:bg-blue-500 active:border-blue-500"
                                         onClick={() =>
-                                            navigate(`/barang/tambah-barang`)
+                                            navigate(`/mobil/tambah-mobil`)
                                         }
                                     >
                                         <span className="text-gray-200 ml-8 transform group-hover:translate-x-20 transition-all duration-300">
-                                            Tambah Barang
+                                            Tambah Mobil
                                         </span>
                                         <span className="absolute right-0 h-full w-10 rounded-lg bg-blue-500 flex items-center justify-center transform group-hover:translate-x-0 group-hover:w-full transition-all duration-300">
                                             <svg
@@ -271,4 +271,4 @@ const Barang = () => {
     );
 };
 
-export default Barang;
+export default Mobil;

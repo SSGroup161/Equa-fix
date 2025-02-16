@@ -6,40 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { Space, Table, Modal } from "antd";
 import dayjs from "dayjs";
 
-const columns = [
-    {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
-        render: (text) => <a>{text}</a>,
-    },
-    {
-        title: "Mobil",
-        dataIndex: "mobil",
-        key: "mobil",
-    },
-    {
-        title: "Transaksi",
-        dataIndex: "transaksi",
-        key: "transaksi",
-    },
-    {
-        title: "Jumlah Setoran",
-        dataIndex: "setoran",
-        key: "setoran",
-    },
-    {
-        title: "Action",
-        key: "action",
-        render: (_, record) => (
-            <Space size="middle">
-                <a>Edit</a>
-                <a>Delete</a>
-            </Space>
-        ),
-    },
-];
-
 const data = [
     {
         key: "1",
@@ -83,6 +49,8 @@ function Home() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalData, setModalData] = useState(null);
     const [filteredData, setFilteredData] = useState(data);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedRecord, setSelectedRecord] = useState(null);
     const navigate = useNavigate();
 
     const handleSearch = (name) => {
@@ -105,42 +73,164 @@ function Home() {
         setIsModalOpen(false);
     };
 
+    const showDeleteModal = (record) => {
+        setSelectedRecord(record);
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteCancel = () => {
+        setIsDeleteModalOpen(false);
+    };
+
+    const handleDeleteConfirm = () => {
+        console.log(`Menghapus setoran: ${selectedRecord.name}`);
+        setIsDeleteModalOpen(false);
+    };
+
+    const columns = [
+        {
+            title: "Name",
+            dataIndex: "name",
+            key: "name",
+        },
+        {
+            title: "Mobil",
+            dataIndex: "mobil",
+            key: "mobil",
+        },
+        {
+            title: "Transaksi",
+            dataIndex: "transaksi",
+            key: "transaksi",
+        },
+        {
+            title: "Jumlah Setoran",
+            dataIndex: "setoran",
+            key: "setoran",
+        },
+        {
+            title: "Action",
+            key: "action",
+            render: (_, record) => (
+                <Space size="middle">
+                    <a
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(
+                                `/setoran-harian/edit-setoran/${record.key}`
+                            );
+                        }}
+                        className="z-20"
+                    >
+                        Edit
+                    </a>
+                    <a
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            showDeleteModal(record);
+                        }}
+                        className="hover:text-red-500 cursor-pointer"
+                    >
+                        Delete
+                    </a>
+                </Space>
+            ),
+        },
+    ];
+
     return (
-        <main className="w-full overflow-y-scroll">
+        <main className="w-full">
             <Sidebar />
             <Modal
-                title="Detail Karyawan"
+                title={
+                    <span className="text-xl font-semibold text-gray-800">
+                        Detail Karyawan
+                    </span>
+                }
                 open={isModalOpen}
                 onCancel={handleCancel}
-                onOk={handleOk}
                 footer={null}
             >
                 {modalData && (
-                    <div>
-                        <p>
-                            <strong>Name:</strong> {modalData.name}
-                        </p>
-                        <p>
-                            <strong>Mobil:</strong> {modalData.mobil}
-                        </p>
-                        <p>
-                            <strong>Transaksi:</strong> {modalData.transaksi}
-                        </p>
-                        <p>
-                            <strong>Jumlah Setoran:</strong> {modalData.setoran}
-                        </p>
+                    <div className="p-4 bg-gray-100 rounded-lg shadow-lg">
+                        <div className="flex items-center space-x-4 mb-4">
+                            <div className="w-16 h-16 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold">
+                                {modalData.name
+                                    .split(" ")
+                                    .slice(0, 2)
+                                    .map((word) => word.charAt(0))
+                                    .join("")}
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    {modalData.name}
+                                </h2>
+                                <p className="text-gray-500">
+                                    Mobil: {modalData.mobil}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 text-gray-700">
+                            <div className="p-3 bg-white rounded-lg shadow">
+                                <p className="text-sm font-medium text-gray-500">
+                                    Transaksi
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {modalData.transaksi}
+                                </p>
+                            </div>
+                            <div className="p-3 bg-white rounded-lg shadow">
+                                <p className="text-sm font-medium text-gray-500">
+                                    Jumlah Setoran
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {modalData.setoran}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 )}
             </Modal>
-            <section className="bg-[#F5FAFF] overflow-hidden">
+
+            <Modal
+                title="Konfirmasi Hapus"
+                open={isDeleteModalOpen}
+                onCancel={handleDeleteCancel}
+                footer={[
+                    <button
+                        key="cancel"
+                        onClick={handleDeleteCancel}
+                        className="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded mr-2"
+                    >
+                        Cancel
+                    </button>,
+                    <button
+                        key="delete"
+                        onClick={handleDeleteConfirm}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Yes
+                    </button>,
+                ]} // Perbaikan: Menghapus <div> yang membungkus tombol
+            >
+                {selectedRecord && (
+                    <p>
+                        Anda yakin untuk menghapus setoran{" "}
+                        <strong>{selectedRecord.name}</strong>?
+                    </p>
+                )}
+            </Modal>
+
+            <section className="bg-[#F5FAFF] overflow-y-scroll ">
                 <div className="w-full ps-64">
                     <div className="w-full relative">
-                        <div className="w-full h-20 border-b-[1px] border-gray-200 bg-[#F9FBFE] flex items-center justify-between px-10 sticky top-0">
+                        <div className="w-full h-20 border-b-[1px] border-gray-200 bg-[#F9FBFE] flex items-center justify-between px-10 sticky top-0 z-20">
                             <h1 className="font-montserrat text-xl">
                                 Setoran Harian
                             </h1>
                             <div className="flex items-center justify-center gap-6">
-                                <h1 className=" font-font-montserrat text-gray-400">
+                                <h1 className="font-font-montserrat text-gray-400">
                                     {currentDate}
                                 </h1>
                                 <img
@@ -258,7 +348,7 @@ function Home() {
                                 </div>
                                 <CustomCalendar />
                             </div>
-                            <div className="overflow-x-auto w-full h-full max-h-[30rem] overflow-scroll mt-6 relative">
+                            <div className="overflow-x-auto w-full h-full max-h-[30rem] mt-6 relative">
                                 <div className="w-full bg-white flex items-center justify-between rounded-t-2xl p-6 sticky top-0 z-20">
                                     <div className="flex items-center justify-center gap-4">
                                         <InputSearch
@@ -312,7 +402,11 @@ function Home() {
                                     pagination={{ pageSize: 5 }}
                                     rowKey="key"
                                     onRow={(record) => ({
-                                        onClick: () => showModal(record),
+                                        onClick: (event) => {
+                                            if (!event.target.closest("a")) {
+                                                showModal(record);
+                                            }
+                                        },
                                     })}
                                 />
                             </div>

@@ -28,6 +28,8 @@ export default function Sidebar() {
             setActiveMenu("penggajian");
         } else if (path.startsWith("/laporan")) {
             setActiveMenu("laporan");
+        } else if (path.startsWith("/mobil")) {
+            setActiveMenu("mobil");
         } else {
             setActiveMenu("");
         }
@@ -196,6 +198,48 @@ export default function Sidebar() {
                                 />
                             </svg>
                             <h1 className="font-montserrat">Data Depot</h1>
+                        </div>
+
+                        <div
+                            className={`flex px-2 cursor-pointer border-l-2 transition-colors duration-300 ease-in-out py-3 gap-4 rounded-xl ${
+                                activeMenu === "mobil"
+                                    ? "bg-[#58AEFF] text-[#003465] border-[#003465]"
+                                    : "text-[#667085] border-white hover:bg-blue-200 hover:text-[#003465] hover:border-[#003465]"
+                            }`}
+                            id="mobil"
+                            onClick={() => handleMenuClick("mobil")}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                            >
+                                <path
+                                    d="M9.007 17C9.007 17.5304 8.79629 18.0391 8.42122 18.4142C8.04614 18.7893 7.53744 19 7.007 19C6.47657 19 5.96786 18.7893 5.59279 18.4142C5.21772 18.0391 5.007 17.5304 5.007 17C5.007 16.4696 5.21772 15.9609 5.59279 15.5858C5.96786 15.2107 6.47657 15 7.007 15C7.53744 15 8.04614 15.2107 8.42122 15.5858C8.79629 15.9609 9.007 16.4696 9.007 17ZM19.007 17C19.007 17.5304 18.7963 18.0391 18.4212 18.4142C18.0461 18.7893 17.5374 19 17.007 19C16.4766 19 15.9679 18.7893 15.5928 18.4142C15.2177 18.0391 15.007 17.5304 15.007 17C15.007 16.4696 15.2177 15.9609 15.5928 15.5858C15.9679 15.2107 16.4766 15 17.007 15C17.5374 15 18.0461 15.2107 18.4212 15.5858C18.7963 15.9609 19.007 16.4696 19.007 17Z"
+                                    stroke={
+                                        activeMenu === "mobil"
+                                            ? "#003465"
+                                            : "#667085"
+                                    }
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                />
+                                <path
+                                    d="M2.007 10H18.007M2.007 10C2.007 10.78 1.987 13.04 2.011 15.26C2.047 15.98 2.167 16.58 5.009 17M2.007 10C2.223 8.26 3.162 6.2 3.642 5.42M9.007 10V5M14.997 17H9.002M2.022 5H12.24C12.24 5 12.78 5 13.26 5.048C14.159 5.132 14.914 5.54 15.67 6.56C16.47 7.64 17.084 9.008 17.9 9.74C19.255 10.956 21.833 10.58 21.977 13.16C22.013 14.48 22.013 15.92 21.953 16.16C21.856 16.867 21.311 16.982 20.633 17C20.045 17.016 19.336 16.972 18.991 17"
+                                    stroke={
+                                        activeMenu === "mobil"
+                                            ? "#003465"
+                                            : "#667085"
+                                    }
+                                    stroke-width="1.5"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </svg>
+                            <h1 className="font-montserrat">Data Mobil</h1>
                         </div>
 
                         <div

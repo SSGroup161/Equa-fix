@@ -2,41 +2,45 @@ import React, { useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import dayjs from "dayjs";
 import { Space, Table, Tag, Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
     {
-        title: "Name",
+        title: "Nama Karyawan",
         dataIndex: "name",
         key: "name",
-        render: (text) => <a>{text}</a>,
     },
     {
-        title: "Age",
-        dataIndex: "age",
-        key: "age",
+        title: "Tempat, Tanggal Lahir",
+        dataIndex: "birthPlaceDate",
+        key: "birthPlaceDate",
     },
     {
-        title: "Address",
+        title: "No. Whatsapp",
+        dataIndex: "whatsapp",
+        key: "whatsapp",
+    },
+    {
+        title: "Mobil",
+        dataIndex: "car",
+        key: "car",
+    },
+    {
+        title: "Alamat",
         dataIndex: "address",
         key: "address",
     },
     {
-        title: "Tags",
-        key: "tags",
-        dataIndex: "tags",
-        render: (_, { tags }) => (
+        title: "Dokumen",
+        key: "documents",
+        dataIndex: "documents",
+        render: (_, { documents }) => (
             <>
-                {tags.map((tag) => {
-                    let color = tag.length > 5 ? "geekblue" : "green";
-                    if (tag === "loser") {
-                        color = "volcano";
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
+                {documents.map((doc) => (
+                    <Tag color="blue" key={doc}>
+                        {doc.toUpperCase()}
+                    </Tag>
+                ))}
             </>
         ),
     },
@@ -45,59 +49,65 @@ const columns = [
         key: "action",
         render: (_, record) => (
             <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
+                <a
+                    href={`/edit/${record.key}`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    Edit
+                </a>
+                <a
+                    href={`/delete/${record.key}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="hover:text-red-500"
+                >
+                    Delete
+                </a>
             </Space>
         ),
     },
 ];
+
 const data = [
     {
         key: "1",
-        name: "John Brown",
-        age: 32,
-        address: "New York No. 1 Lake Park",
-        tags: ["nice", "developer"],
+        name: "John Doe",
+        birthPlaceDate: "Jakarta, 12 Maret 1990",
+        whatsapp: "0812-3456-7890",
+        car: "F 1234 XYZ",
+        address: "Jl. Merdeka No. 10, Jakarta",
+        documents: ["KTP", "SIM"],
     },
     {
         key: "2",
-        name: "Jim Green",
-        age: 42,
-        address: "London No. 1 Lake Park",
-        tags: ["loser"],
+        name: "Sarah Johnson",
+        birthPlaceDate: "Bandung, 5 April 1985",
+        whatsapp: "0813-4567-8901",
+        car: "F 1235 XYZ",
+        address: "Jl. Diponegoro No. 20, Bandung",
+        documents: ["KTP"],
     },
     {
         key: "3",
-        name: "Joe Black",
-        age: 32,
-        address: "Sydney No. 1 Lake Park",
-        tags: ["cool", "teacher"],
-    },
-    {
-        key: "4",
-        name: "Joe Black",
-        age: 32,
-        address: "Sydney No. 1 Lake Park",
-        tags: ["cool", "teacher"],
-    },
-    {
-        key: "5",
-        name: "Joe Black",
-        age: 32,
-        address: "Sydney No. 1 Lake Park",
-        tags: ["cool", "teacher"],
+        name: "Michael Lee",
+        birthPlaceDate: "Surabaya, 8 Juli 1993",
+        whatsapp: "0812-9876-5432",
+        car: "F 1236 XYZ",
+        address: "Jl. Pemuda No. 15, Surabaya",
+        documents: ["KTP", "SIM"],
     },
 ];
 
 const Karyawan = () => {
     const currentDate = dayjs().locale("id").format("dddd, D MMMM YYYY");
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const showModal = () => {
+    const [modalData, setModalData] = useState(null);
+    const navigate = useNavigate();
+
+    const showModal = (record) => {
+        setModalData(record);
         setIsModalOpen(true);
     };
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
+
     const handleCancel = () => {
         setIsModalOpen(false);
     };
@@ -106,17 +116,82 @@ const Karyawan = () => {
         <main className="w-full overflow-y-scroll">
             <Sidebar />
             <Modal
-                title="Tambah Karyawan"
+                title={
+                    <span className="text-xl font-semibold text-gray-800">
+                        Detail Karyawan
+                    </span>
+                }
                 open={isModalOpen}
-                onOk={handleOk}
                 onCancel={handleCancel}
-                okText="Tambahkan"
-                cancelText="Kembali"
+                footer={null}
             >
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
+                {modalData && (
+                    <div className="p-4 bg-gray-100 rounded-lg shadow-lg">
+                        <div className="flex items-center space-x-4 mb-4">
+                            {/* Avatar dengan dua inisial */}
+                            <div className="w-16 h-16 bg-blue-500 text-white flex items-center justify-center rounded-full text-lg font-bold uppercase">
+                                {modalData.name
+                                    .split(" ")
+                                    .slice(0, 2)
+                                    .map((word) => word.charAt(0))
+                                    .join("")}
+                            </div>
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    {modalData.name}
+                                </h2>
+                                <p className="text-gray-500">
+                                    Mobil: {modalData.car}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 text-gray-700">
+                            <div className="p-3 bg-white rounded-lg shadow">
+                                <p className="text-sm font-medium text-gray-500">
+                                    Tempat, Tanggal Lahir
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {modalData.birthPlaceDate}
+                                </p>
+                            </div>
+                            <div className="p-3 bg-white rounded-lg shadow">
+                                <p className="text-sm font-medium text-gray-500">
+                                    No. Whatsapp
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {modalData.whatsapp}
+                                </p>
+                            </div>
+                            <div className="p-3 bg-white rounded-lg shadow">
+                                <p className="text-sm font-medium text-gray-500">
+                                    Alamat
+                                </p>
+                                <p className="text-lg font-semibold">
+                                    {modalData.address}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            <p className="text-sm font-medium text-gray-500 mb-2">
+                                Dokumen
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {modalData.documents.map((doc, index) => (
+                                    <span
+                                        key={index}
+                                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg"
+                                    >
+                                        {doc}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </Modal>
+
             <section className="bg-[#F5FAFF] overflow-hidden">
                 <div className="w-full h-screen ps-64">
                     <div className="w-full relative">
@@ -125,7 +200,7 @@ const Karyawan = () => {
                                 Data Karyawan
                             </h1>
                             <div className="flex items-center justify-center gap-6">
-                                <h1 className=" font-font-montserrat text-gray-400">
+                                <h1 className="font-montserrat text-gray-400">
                                     {currentDate}
                                 </h1>
                                 <img
@@ -144,7 +219,11 @@ const Karyawan = () => {
                                     <h1>Data Karyawan</h1>
                                     <button
                                         className="rounded-lg overflow-hidden relative w-52 h-10 cursor-pointer flex items-center border border-blue-500 bg-blue-500 group hover:bg-blue-500 active:bg-blue-500 active:border-blue-500"
-                                        onClick={showModal}
+                                        onClick={() =>
+                                            navigate(
+                                                `/karyawan/tambah-karyawan`
+                                            )
+                                        }
                                     >
                                         <span className="text-gray-200 ml-8 transform group-hover:translate-x-20 transition-all duration-300">
                                             Tambah Karyawan
@@ -178,7 +257,13 @@ const Karyawan = () => {
                                         </span>
                                     </button>
                                 </div>
-                                <Table columns={columns} dataSource={data} />
+                                <Table
+                                    columns={columns}
+                                    dataSource={data}
+                                    onRow={(record) => ({
+                                        onClick: () => showModal(record),
+                                    })}
+                                />
                             </div>
                         </div>
                     </div>

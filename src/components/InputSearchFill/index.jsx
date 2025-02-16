@@ -1,17 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 const InputSearchFill = ({ data, onSelect }) => {
     const [query, setQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [isSuggestionClicked, setIsSuggestionClicked] = useState(false);
-
-    useEffect(() => {
-        // Jika query kosong DAN suggestion belum diklik, reset formulir
-        if (query.trim() === "" && !isSuggestionClicked) {
-            onSelect({ name: "", age: "", address: "", tags: "" });
-        }
-        // Jika query kosong TAPI suggestion sudah diklik, biarkan formulir tetap terisi
-    }, [query, isSuggestionClicked, onSelect]);
 
     const handleInputChange = (e) => {
         const value = e.target.value;
@@ -35,29 +27,40 @@ const InputSearchFill = ({ data, onSelect }) => {
     };
 
     const handleSuggestionClick = (item) => {
-        setQuery(item.name); // Set query to selected name
-        setSuggestions([]); // Clear suggestions
-        setIsSuggestionClicked(true); // Mark suggestion as clicked
-        onSelect(item); // Pass selected item to parent
+        setQuery(item.name); // Set query ke nama yang dipilih
+        setSuggestions([]); // Hapus daftar saran
+        setIsSuggestionClicked(true); // Tandai bahwa sudah dipilih
+        onSelect(item); // Kirim data ke parent
     };
 
     const handleClear = () => {
-        setQuery(""); // Clear input
-        setSuggestions([]); // Clear suggestions
-        setIsSuggestionClicked(false); // Reset suggestion clicked state
-        onSelect({ name: "", age: "", address: "", tags: "" }); // Clear form data
+        setQuery(""); // Kosongkan input
+        setSuggestions([]); // Hapus daftar saran
+        setIsSuggestionClicked(false); // Reset state klik
+        onSelect({ name: "", age: "", address: "", tags: "" }); // Reset data di parent
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault(); // Mencegah refresh
+            if (!query.trim()) {
+                handleClear(); // Kosongkan input jika tidak ada teks
+            }
+        }
     };
 
     return (
-        <div className="relative w-full max-w-md">
+        <div className="relative w-full">
             <div className="flex items-center border border-gray-300 rounded-lg bg-white shadow-sm">
                 <input
                     type="text"
                     value={query}
                     onChange={handleInputChange}
                     onFocus={handleInputFocus}
+                    onKeyDown={handleKeyDown} // Tangani event enter
                     placeholder="Cari nama karyawan"
                     className="w-full px-4 py-2 text-gray-700 placeholder-gray-400 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
                 />
                 <button
                     type="button"
@@ -97,6 +100,7 @@ const InputSearchFill = ({ data, onSelect }) => {
                     )}
                 </button>
             </div>
+
             {!isSuggestionClicked &&
                 query.trim() !== "" &&
                 suggestions.length === 0 && (
@@ -104,6 +108,7 @@ const InputSearchFill = ({ data, onSelect }) => {
                         Karyawan tidak ditemukan
                     </div>
                 )}
+
             {suggestions.length > 0 && (
                 <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1">
                     {suggestions.map((item) => (
